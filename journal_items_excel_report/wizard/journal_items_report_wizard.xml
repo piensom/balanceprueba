@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Journal Items report wizard -->
+    <record id="journal_items_report_wizard_view" model="ir.ui.view">
+        <field name="name">journal items report wizard form</field>
+        <field name="model">journal.items.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="POS Order Report">
+                <sheet>
+                    <group col="4">
+                        <field name="from_date"/>
+                        <field name="to_date"/>
+                        <field name="company_id" required="1"/>
+                    </group>
+                    <footer>
+                        <button name="print_jurnal_report_xls" string="Export to Excel" type="object" class="btn-primary" style="margin-left: 5px" />
+                        <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_journal_items_orders_report" model="ir.actions.act_window">
+        <field name="name">Journal Items Report</field>
+        <field name="res_model">journal.items.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_journal_items_report" action="action_journal_items_orders_report" name="Journal Items Report" parent="account.account_reports_management_menu" sequence="15" />
+
+</odoo>

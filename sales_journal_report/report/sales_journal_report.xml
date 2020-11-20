@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="report_sales_journal">
+    <t t-call="web.html_container">
+        <!-- <t t-foreach="docs" t-as="o"> -->
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <h3 class="text-center">
+                        Periodo comprendido del <span t-esc="get_from_date"/> al <span t-esc="get_to_date"/>
+                    </h3>
+                    <div class="text-right">Folio:&#160;&#160;<span t-esc="get_folio"/></div>
+                    <div class="row" style="border:1px solid black; height:50px;">
+                        <div class="col-2">
+                            <span>Cuenta Contable</span>
+                        </div>
+                        <div class="col-4">
+                            <span>Descripcion de la Cuenta</span>
+                        </div>
+                        <div class="col-4">
+                            <span>Descripcion Movim iento</span>
+                        </div>
+                        <div class="col-1">
+                            <span>DEBE</span>
+                        </div>
+                        <div class="col-1 text-right">
+                            <span>HABER</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-1">
+                            <span><strong>Mes:</strong></span>
+                        </div>
+                        <div class="col-1">
+                            <span t-esc="get_month"/>
+                        </div>
+                        <div class="col-2">
+                            <span t-esc="get_month_name"/>
+                        </div>
+                        <div class="col-8">
+                            <span><strong>Periodo: </strong><span t-esc="get_year"/></span>
+                        </div>
+                    </div>
+                    <table width="100%">
+                        <t t-foreach="get_move" t-as="move">
+                            <tr>
+                                <td>
+                                    <strong>Documento:&#160;&#160;</strong>
+                                    <span t-esc="move.invoice_payment_ref"/>
+                                </td>
+                                <td>
+                                    <strong>Fecha:&#160;&#160;&#160;&#160;</strong>
+                                    <span t-esc="move.date"/>
+                                </td>
+                                <td colspan="2"> 
+                                    <strong>Descripcion:&#160;&#160;&#160;&#160;&#160;</strong>
+                                    <span t-esc="move.partner_id.name"/>
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr t-foreach="move.line_ids" t-as="line">
+                                <td>
+                                    <span t-esc="line.account_id.code"/>
+                                </td>
+                                <td>
+                                    <span t-esc="line.account_id.name"/>
+                                </td>
+                                <td>
+                                    <span t-esc="line.name"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-if="line.debit != 0.0" t-esc="line.debit"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-if="line.credit != 0.0" t-esc="line.credit"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><strong>TOTAL DOCUMENTO:</strong></td>
+                                <td></td>
+                                <td class="text-right" style="border-top: solid 1px; border-bottom: solid 1px;">
+                                    <span t-esc="sum(l.debit for l in move.line_ids)"/>
+                                </td>
+                                <td class="text-right" style="border-top: solid 1px; border-bottom: solid 1px;">
+                                    <span t-esc="sum(l.credit for l in move.line_ids)"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </table>
+                </div>
+            </t>
+        <!-- </t> -->
+    </t>
+</template>
+
+
+    <report
+        id="action_report_sales_journal"
+        model="account.common.journal.report"
+        string="Sales Journals Report"
+        report_type="qweb-pdf"
+        name="sales_journal_report.report_sales_journal"
+        file="sales_journal_report.report_sales_journal"
+        />
+
+    <record id="paperformat_sale_journal" model="report.paperformat">
+        <field name="name">Salse Journal Report</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="page_height">297</field>
+        <field name="page_width">210</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">23</field>
+        <field name="margin_bottom">23</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">12</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_sales_journal" model="ir.actions.report">
+        <field name="paperformat_id" ref="sales_journal_report.paperformat_sale_journal"/>
+    </record>
+
+</odoo>
